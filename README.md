@@ -24,8 +24,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: (https://github.com/TheNewDevl/FE-Chal---calculator)
-- Live Site URL: (https://thenewdevl.github.io/FE-Chal---calculator)
+- Solution URL: (https://github.com/TheNewDevl/React-calculator_FE-Chal)
+- Live Site URL: (https://thenewdevl.github.io/React-calculator_FE-Chal)
 
 ## My process
 
