@@ -1,6 +1,5 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import GlobalStyle from './styles/GlobalStyle'
-import { ThemeContext } from './utils/contex'
 import Header from './components/Header/Header'
 import styled from 'styled-components'
 import Screen from './components/Screen/Screen'
