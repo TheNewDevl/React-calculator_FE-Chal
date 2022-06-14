@@ -13,6 +13,9 @@ const Container = styled.main`
   height: 100vh;
   min-height: 750px;
   gap: 20px;
+  @media screen and (max-width: 540px) {
+    min-height: 600px;
+  }
 `
 
 function App() {

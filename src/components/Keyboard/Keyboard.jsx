@@ -5,13 +5,18 @@ import { ThemeContext } from '../../utils/contex'
 
 const KeyboardDiv = styled.div`
   padding: 25px;
-  width: 540px;
+  width: 100%;
+  max-width: 540px;
   height: 480px;
   background-color: ${({ palette }) => palette.bg.togKeypad};
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
   border-radius: 10px;
+  @media screen and (max-width: 540px) {
+    gap: 15px;
+    height: 415px;
+  }
 `
 const Key = styled.button`
   border: none;
@@ -38,6 +43,9 @@ const KeyDel = styled(Key)`
   &:hover {
     background-color: ${({ palette }) => lighten(0.2, palette.key.secondaryBg)};
   }
+  @media screen and (max-width: 540px) {
+    font-size: 20px;
+  }
 `
 const KeyReset = styled(Key)`
   grid-column: 1/3;
@@ -48,6 +56,9 @@ const KeyReset = styled(Key)`
   &:hover {
     background-color: ${({ palette }) => lighten(0.2, palette.key.secondaryBg)};
   }
+  @media screen and (max-width: 540px) {
+    font-size: 20px;
+  }
 `
 const KeyResult = styled(Key)`
   grid-column: 3/5;
@@ -56,6 +67,9 @@ const KeyResult = styled(Key)`
   box-shadow: 0px 4px 0px 0px ${({ palette }) => palette.key.shadow};
   &:hover {
     background-color: ${({ palette }) => lighten(0.2, palette.key.red)};
+  }
+  @media screen and (max-width: 540px) {
+    font-size: 20px;
   }
 `
 const Keyboard = ({
@@ -171,7 +185,9 @@ const Keyboard = ({
     if (display !== 0 && display !== '-0') {
       setDisplay((d) => {
         let truncated = d.slice(0, -1)
-        return truncated.length < 1 ? 0 : truncated
+        return truncated.length < 1 || truncated === '-'
+          ? handleReset()
+          : truncated
       })
     }
   }

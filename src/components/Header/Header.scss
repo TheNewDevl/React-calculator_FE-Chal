@@ -1,7 +1,8 @@
 header {
   display: flex;
   justify-content: space-between;
-  width: 540px;
+  width: 100%;
+  max-width: 540px;
 }
 
 .themes {

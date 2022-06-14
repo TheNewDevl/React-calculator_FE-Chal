@@ -13,6 +13,7 @@ const StyledGlobalStyle = createGlobalStyle`
     body {
         margin: 0;
         background-color: ${({ palette }) => palette.bg.main};
+        padding: 0 20px;
     }   
     header{
         color: ${({ palette, choice }) =>
