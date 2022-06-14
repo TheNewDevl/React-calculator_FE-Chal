@@ -1,5 +1,5 @@
 import { lighten } from 'polished'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { ThemeContext } from '../../utils/contex'
 
@@ -11,9 +11,10 @@ const KeyboardDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
+  border-radius: 10px;
 `
-
-const Key = styled.div`
+const Key = styled.button`
+  border: none;
   background-color: beige;
   height: 60px;
   display: flex;
@@ -29,7 +30,6 @@ const Key = styled.div`
     background-color: ${({ palette }) => lighten(0.2, palette.key.primaryBg)};
   }
 `
-
 const KeyDel = styled(Key)`
   color: ${({ palette, choice }) =>
     choice === 3 ? palette.text.third : palette.text.second};
@@ -58,64 +58,174 @@ const KeyResult = styled(Key)`
     background-color: ${({ palette }) => lighten(0.2, palette.key.red)};
   }
 `
-const Keyboard = ({ setDisplay }) => {
+const Keyboard = ({
+  display,
+  setDisplay,
+  setOperator,
+  setFirst,
+  operator,
+  first,
+  second,
+}) => {
   const { palette, themeChoice } = useContext(ThemeContext)
+  const [result, setResult] = useState(false)
+  const [neg, setNeg] = useState(false)
 
-  const handleNumbers = (e) => {
-    const value = parseInt(e.currentTarget.textContent)
-    setDisplay((d) => {
-      return d + value
-    })
+  const handleNumbers = (e, neg) => {
+    const keyValue = e.currentTarget.textContent
+
+    if (result) {
+      setFirst(display)
+      setDisplay('')
+      setResult(false)
+    }
+    if (operator && !first) {
+      setFirst(display)
+      if (neg) {
+        setDisplay('')
+        setNeg(false)
+      } else {
+        setDisplay('')
+      }
+    }
+    if (display === 0) {
+      setDisplay(keyValue)
+    } else if (display === '-0') {
+      setDisplay((d) => `-${keyValue}`)
+    } else {
+      setDisplay((d) => d + `${keyValue}`)
+    }
   }
 
-  const handleReset = (e) => {}
+  const handleReset = (e) => {
+    setDisplay(0)
+    setOperator('')
+    setFirst('')
+  }
+
+  const handleOperator = (e) => {
+    const keyValue = e.currentTarget.textContent
+    setNeg(false)
+
+    if (keyValue === '-') {
+      if (display === 0) {
+        setDisplay('-0')
+      } else if (keyValue === operator && display.slice(0, 1) !== '-') {
+        setNeg(true)
+        if (neg && first && operator && display !== 0) {
+          setOperator(keyValue)
+          handleResult()
+        }
+      } else if (first && operator && display !== 0) {
+        setOperator(keyValue)
+        handleResult()
+      } else {
+        setOperator(keyValue)
+      }
+    } else if (first && operator && display !== 0) {
+      setOperator(keyValue)
+      handleResult()
+    } else if (operator === keyValue) {
+      return
+    } else {
+      setOperator(keyValue)
+    }
+  }
+
+  const handleDecimal = (e) => {
+    if (display === 0 || display === '-0') {
+      setDisplay((d) => d + '.')
+      return
+    }
+
+    if (display.includes('.')) return
+    setDisplay((d) => d + '.')
+  }
+
+  const calculate = (first, operator, display) => {
+    if (operator === '+') return parseFloat(first) + parseFloat(display)
+    if (operator === '-') return parseFloat(first) - parseFloat(display)
+    if (operator === 'x') return parseFloat(first) * parseFloat(display)
+    if (operator === '/') return parseFloat(first) / parseFloat(display)
+  }
+
+  const handleResult = (e) => {
+    let result = ''
+    if (first && operator && display !== 0) {
+      result = calculate(first, operator, display)
+      setDisplay(String(result))
+      setFirst(String(result))
+      setResult(true)
+    }
+    if (e?.currentTarget.textContent === '=') {
+      setOperator('')
+    }
+  }
+
   return (
     <KeyboardDiv palette={palette}>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="seven" onClick={handleNumbers} palette={palette}>
         7
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="eight" onClick={handleNumbers} palette={palette}>
         8
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="nine" onClick={handleNumbers} palette={palette}>
         9
       </Key>
       <KeyDel choice={themeChoice} palette={palette}>
         DEL
       </KeyDel>
 
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="four" onClick={handleNumbers} palette={palette}>
         4
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="five" onClick={handleNumbers} palette={palette}>
         5
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="six" onClick={handleNumbers} palette={palette}>
         6
       </Key>
-      <Key palette={palette}>+</Key>
+      <Key id="add" onClick={handleOperator} palette={palette}>
+        +
+      </Key>
 
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="one" onClick={handleNumbers} palette={palette}>
         1
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="two" onClick={handleNumbers} palette={palette}>
         2
       </Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="three" onClick={handleNumbers} palette={palette}>
         3
       </Key>
-      <Key palette={palette}>-</Key>
+      <Key id="subtract" onClick={handleOperator} palette={palette}>
+        -
+      </Key>
 
-      <Key palette={palette}>.</Key>
-      <Key onClick={handleNumbers} palette={palette}>
+      <Key id="decimal" onClick={handleDecimal} palette={palette}>
+        .
+      </Key>
+      <Key id="zero" onClick={handleNumbers} palette={palette}>
         0
       </Key>
-      <Key palette={palette}>/</Key>
-      <Key palette={palette}>x</Key>
-      <KeyReset onClick={handleReset} choice={themeChoice} palette={palette}>
+      <Key id="divide" onClick={handleOperator} palette={palette}>
+        /
+      </Key>
+      <Key id="multiply" onClick={handleOperator} palette={palette}>
+        x
+      </Key>
+      <KeyReset
+        id="clear"
+        onClick={handleReset}
+        choice={themeChoice}
+        palette={palette}
+      >
         RESET
       </KeyReset>
-      <KeyResult palette={palette}>=</KeyResult>
+      <KeyResult id="equals" onClick={handleResult} palette={palette}>
+        =
+      </KeyResult>
     </KeyboardDiv>
   )
 }

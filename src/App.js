@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import GlobalStyle from './styles/GlobalStyle'
 import { ThemeContext } from './utils/contex'
 import Header from './components/Header/Header'
@@ -17,16 +17,44 @@ const Container = styled.main`
 `
 
 function App() {
-  const { theme } = useContext(ThemeContext)
-  const [display, setDisplay] = useState('')
+  const [display, setDisplay] = useState(0)
+  const [firstArg, setFirstArg] = useState()
+  const [secondArg, setSecondArg] = useState()
+  const [result, setResult] = useState()
+  const [operator, setOperator] = useState()
+
+  useEffect(() => {
+    const string = '222+2+2'
+    console.log(string)
+
+    console.log(string.split(/[0-9]/))
+    console.log(string.split('+' || '-' || '/' || '*'))
+  }, [])
 
   return (
     <Container>
       <GlobalStyle />
       <Header />
 
-      <Screen display={display} setDisplay={setDisplay} />
-      <Keyboard dispay={display} setDisplay={setDisplay} />
+      <Screen
+        display={display}
+        setDisplay={setDisplay}
+        first={setFirstArg}
+        second={setSecondArg}
+        result={setResult}
+        operator={operator}
+      />
+      <Keyboard
+        display={display}
+        setDisplay={setDisplay}
+        setFirst={setFirstArg}
+        setSecond={setSecondArg}
+        setResult={setResult}
+        setOperator={setOperator}
+        operator={operator}
+        first={firstArg}
+        second={secondArg}
+      />
     </Container>
   )
 }
