@@ -19,41 +19,24 @@ const Container = styled.main`
 function App() {
   const [display, setDisplay] = useState(0)
   const [firstArg, setFirstArg] = useState()
-  const [secondArg, setSecondArg] = useState()
-  const [result, setResult] = useState()
   const [operator, setOperator] = useState()
-
-  useEffect(() => {
-    const string = '222+2+2'
-    console.log(string)
-
-    console.log(string.split(/[0-9]/))
-    console.log(string.split('+' || '-' || '/' || '*'))
-  }, [])
+  const [neg, setNeg] = useState(false)
 
   return (
     <Container>
       <GlobalStyle />
       <Header />
 
-      <Screen
-        display={display}
-        setDisplay={setDisplay}
-        first={setFirstArg}
-        second={setSecondArg}
-        result={setResult}
-        operator={operator}
-      />
+      <Screen display={display} operator={operator} neg={neg} />
       <Keyboard
         display={display}
         setDisplay={setDisplay}
         setFirst={setFirstArg}
-        setSecond={setSecondArg}
-        setResult={setResult}
         setOperator={setOperator}
         operator={operator}
         first={firstArg}
-        second={secondArg}
+        neg={neg}
+        setNeg={setNeg}
       />
     </Container>
   )

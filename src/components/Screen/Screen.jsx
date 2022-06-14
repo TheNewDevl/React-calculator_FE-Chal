@@ -11,6 +11,7 @@ const ScreenSection = styled.section`
   justify-content: flex-end;
   padding: 30px;
   border-radius: 10px;
+  position: relative;
 `
 const Display = styled.p`
   color: ${({ palette, choice }) =>
@@ -18,25 +19,27 @@ const Display = styled.p`
   font-size: 55px;
 `
 
-const Screen = ({ display, operator }) => {
+const Operator = styled.span`
+  color: #fff;
+  font-size: 55px;
+  position: absolute;
+  left: 30px;
+`
+
+const Neg = styled.span`
+  color: #fff;
+  font-size: 30px;
+`
+const Screen = ({ display, operator, neg }) => {
   const { palette, themeChoice } = useContext(ThemeContext)
-  let result = display
   if (palette)
     return (
       <ScreenSection palette={palette} choice={themeChoice}>
         <Display id="display" palette={palette} choice={themeChoice}>
           {display}
         </Display>
-        {operator && (
-          <span
-            style={{ color: 'white', fontSize: '30px' }}
-            id="display"
-            palette={palette}
-            choice={themeChoice}
-          >
-            {operator}
-          </span>
-        )}
+        {operator && <Operator id="display">{operator}</Operator>}
+        {neg && <Neg id="display">----</Neg>}
       </ScreenSection>
     )
 }

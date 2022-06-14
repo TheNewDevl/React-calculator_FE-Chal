@@ -65,28 +65,31 @@ const Keyboard = ({
   setFirst,
   operator,
   first,
-  second,
+  neg,
+  setNeg,
 }) => {
   const { palette, themeChoice } = useContext(ThemeContext)
   const [result, setResult] = useState(false)
-  const [neg, setNeg] = useState(false)
 
-  const handleNumbers = (e, neg) => {
+  const handleNumbers = (e) => {
     const keyValue = e.currentTarget.textContent
 
     if (result) {
-      setFirst(display)
       setDisplay('')
       setResult(false)
     }
     if (operator && !first) {
       setFirst(display)
       if (neg) {
-        setDisplay('')
         setNeg(false)
+        setDisplay('-')
       } else {
         setDisplay('')
       }
+    }
+    if (neg) {
+      setNeg(false)
+      setDisplay('-')
     }
     if (display === 0) {
       setDisplay(keyValue)
@@ -101,6 +104,7 @@ const Keyboard = ({
     setDisplay(0)
     setOperator('')
     setFirst('')
+    setNeg(false)
   }
 
   const handleOperator = (e) => {
@@ -110,7 +114,7 @@ const Keyboard = ({
     if (keyValue === '-') {
       if (display === 0) {
         setDisplay('-0')
-      } else if (keyValue === operator && display.slice(0, 1) !== '-') {
+      } else if (operator && operator !== '-') {
         setNeg(true)
         if (neg && first && operator && display !== 0) {
           setOperator(keyValue)
@@ -156,9 +160,19 @@ const Keyboard = ({
       setDisplay(String(result))
       setFirst(String(result))
       setResult(true)
+      setNeg(false)
     }
     if (e?.currentTarget.textContent === '=') {
       setOperator('')
+    }
+  }
+
+  const handleDelete = (e) => {
+    if (display !== 0 && display !== '-0') {
+      setDisplay((d) => {
+        let truncated = d.slice(0, -1)
+        return truncated.length < 1 ? 0 : truncated
+      })
     }
   }
 
@@ -173,7 +187,7 @@ const Keyboard = ({
       <Key id="nine" onClick={handleNumbers} palette={palette}>
         9
       </Key>
-      <KeyDel choice={themeChoice} palette={palette}>
+      <KeyDel onClick={handleDelete} choice={themeChoice} palette={palette}>
         DEL
       </KeyDel>
 
